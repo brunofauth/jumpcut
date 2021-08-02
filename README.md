@@ -46,7 +46,7 @@ POSITIONAL ARGUMENTS
   src                   path to the source/input video file.
   dst                   Path to the destination/output file.
   
-OPTIONS:
+OPTIONS
   -h, --help                   Show this help message and exit
   -s, --speed SPEED            The speed that silent frames should be played at
   -t, --threshold THRESHOLD    How loud, from 0 (0%) to 1 (100%), a
