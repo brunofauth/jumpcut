@@ -15,7 +15,7 @@ from audiotsm.io.array import ArrayReader, ArrayWriter
 from scipy.io import wavfile
 
 
-from typing import Sequence, TypeVar, Iterable, Iterator
+from typing import Sequence, TypeVar, Iterable, Iterator, Optional
 T = TypeVar("T", float, int)
 
 
@@ -120,7 +120,7 @@ def get_args() -> argparse.Namespace:
         help="how many silent frames to keep adjascent to a non-silent video segment, for context")
     parser.add_argument('-q', '--quality', type=int, default=3,
         help="quality of frames to be extracted from input video (1=highest, 31=lowest, 3=default)")
-    parser.add_argument('-d', '--directory', default=None,
+    parser.add_argument('-d', '--directory', default=None, type=pathlib.Path,
         help="extract video data to this folder instead of doing it to a temporary one")
     parser.add_argument('-f', '--force', action="store_true",
         help="do not re-use the previously extracted files present in '--directory'.")
@@ -128,7 +128,7 @@ def get_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def jumpcut(src: str, dst: str, speed: float, threshold: float, margin: int, quality: int, root_dir: str, force: bool) -> None:
+def jumpcut(src: str, dst: str, speed: float, threshold: float, margin: int, quality: int, root_dir: pathlib.Path, force: bool) -> None:
 
     # This way, 'frame_count' is ensured to be integer and correct.
     cmd = f"ffprobe -v error -select_streams v:0 -count_packets -of json -show_entries stream=nb_read_packets,r_frame_rate '{src}'"
@@ -188,15 +188,14 @@ def jumpcut(src: str, dst: str, speed: float, threshold: float, margin: int, qua
     sh(f"ffmpeg -hide_banner -y -framerate {frame_rate} -i '{new_frames_dir / frame_fmt}' -i '{new_audio_path}' -strict -2 '{dst}'")
 
 
-def main(directory: str=None, **kwargs) -> None:
+def main(directory: Optional[pathlib.Path]=None, **kwargs) -> None:
 
     if directory is None:
         with tf.TemporaryDirectory() as dir_str:
             jumpcut(**kwargs, root_dir=pathlib.Path(dir_str))
     else:
-        root_dir = pathlib.Path(directory)
-        root_dir.mkdir(parents=True, exist_ok=True)
-        jumpcut(**kwargs, root_dir=root_dir)
+        directory.mkdir(parents=True, exist_ok=True)
+        jumpcut(**kwargs, root_dir=directory)
 
 
 if __name__ == "__main__":
