@@ -16,6 +16,9 @@ This was, originally, a fork of `https://github.com/carykh/jumpcutter`, but I ch
     - powershell: `.venv/Scripts/activate.ps1`
 1. Install this script's dependencies:
     - `pip install -r requirements.txt`
+1. Install [ffmpeg](https://www.ffmpeg.org/)
+    - Arch/Manjaro: `sudo pacman -S ffmpeg`
+    - Others: see link above.
 
 # Usage
 1. Switch to the cloned directory:
