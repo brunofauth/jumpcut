@@ -1,1 +1,6 @@
-.venv/
+*
+!.gitignore
+!requirements.txt
+!LICENSE
+!README.md
+!jumpcut.py
